@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from 'dotenv';
 import {Pool} from "pg";
 import cors from "cors";
+import axios from "axios";
+import cron from "node-cron";
 
 dotenv.config();
 
@@ -78,7 +80,52 @@ app.get("/api/websites/:id/uptime",async (req,res)=>{
     }
 })
 
+async function checkWebsite(website) {
+    const startTime=Date.now();
+    try {
+        const result= await axios.get(website.url,{
+            timeout:10000,
+            validateStatus:(status) => status < 500 
+        });
+        const queryText="insert into checks (website_id,status,response_time,status_code,error_message) values ($1,$2,$3,$4,$5)";
+        const responseTime=Date.now()-startTime;
+        const websiteStatus=(result.status>=200 &&result.status<=399) ? "up" : "down";
+        console.log(`success ${website.name}: ${websiteStatus} (${responseTime}ms)`);
+        await pool.query(queryText,[website.id,websiteStatus,responseTime,result.status,null]);
+
+    } catch (error) {
+        const responseTime=Date.now()-startTime;
+        const queryText="insert into checks (website_id,status,response_time,status_code,error_message) values ($1,$2,$3,$4,$5)";
+        console.log(`error ${website.name}: down (${error.message})`);
+        await pool.query(queryText,[website.id,"down",responseTime,null,error.message]);
+    }
+    
+}
+
+async function checkAllWebsites() {
+    try {
+        const websites=await pool.query("select * from websites");
+        console.log("Starting checks");
+        const websitePromises=[];
+        for(let website of websites.rows){
+            websitePromises.push(checkWebsite({url:website.url,id:website.id,name:website.name,checkInterval:website.check_interval,createdAt:website.created_at }));
+        }
+        await Promise.all(websitePromises);
+        
+    } catch (error) {
+        console.error("Error checking websites:", error);
+    }
+    
+}
+
+cron.schedule('* * * * *',()=>{
+    checkAllWebsites();
+})
+
+
+
 app.listen(PORT, ()=>{
+    checkAllWebsites();
     console.log(`Server running on http://localhost:${PORT}`);
 })
 
