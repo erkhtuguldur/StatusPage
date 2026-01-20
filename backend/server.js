@@ -14,7 +14,6 @@ const app=express();
 const PORT = 5000;
 const httpServer=createServer(app);
 const io = new Server(httpServer, { cors: { origin: '*' } });
-httpServer.listen(5000);
 
 const pool=new Pool({
     host:process.env.DB_HOST,
@@ -137,6 +136,7 @@ async function checkAllWebsites() {
     } catch (error) {
         console.error("Error checking websites:", error);
     }
+    console.log("Checks completed");
     
 }
 
