@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { io } from 'socket.io-client';
+import StatusCard from './StatusCard';
+import './App.css';
 function Dashboard(){
     const [websites,setWebsites]=useState([]);
     const [isAdmin,setIsAdmin]=useState(false);
@@ -8,7 +10,7 @@ function Dashboard(){
     const [newName, setNewName] = useState('');
     const [newUrl, setNewUrl] = useState('');
     const [newInterval, setNewInterval] = useState(60);
-
+    const [errorMessage, setErrorMessage]=useState("");
 
     useEffect(()=>{
         const socket=io("http://localhost:5000");
@@ -38,10 +40,14 @@ function Dashboard(){
                     password
                 })});
             const data=await response.json();
-            if(data.valid){setIsAdmin(true);}
-            else{}
+            if(data.valid){setIsAdmin(true);
+                setErrorMessage("");
+            }
+            else{
+                setErrorMessage("Invalid password");
+            }
         } catch (error) {
-            console.log("Invalid password")
+            setErrorMessage(error);
         }
     }
 
@@ -61,8 +67,9 @@ function Dashboard(){
             setNewName('');
             setNewUrl('');
             setNewInterval(60);
+            setErrorMessage("");
         } catch (error) {
-            console.log("Error adding website", error);
+            setErrorMessage("Error adding website");
         }
     }
 
@@ -72,8 +79,9 @@ function Dashboard(){
                 method: "DELETE"
             });
             setWebsites(websites.filter(site => site.id !== id));
+            setErrorMessage("");
         } catch (error) {
-            console.log("Error deleting website", error);
+            setErrorMessage("Error deleting website");
         }
     }
 
@@ -90,13 +98,13 @@ function Dashboard(){
     }
 
     return(
-        <div>
-            <h1>Status dashboard</h1>
+        <div className="dashboardContainer">
+            <h1 className="dashboardTitle">Status Dashboard</h1>
             {
                 isAdmin&&
-                <div>
+                <div className="adminPanel">
                     <h2>Add Website</h2>
-                    <div>
+                    <div className="formGroup">
                         <label htmlFor="nameInput">Website name:</label>
                         <input 
                             type="text" 
@@ -105,7 +113,7 @@ function Dashboard(){
                             onChange={(e) => setNewName(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className="formGroup">
                         <label htmlFor="urlInput">Website url:</label>
                         <input 
                             type="text" 
@@ -114,7 +122,7 @@ function Dashboard(){
                             onChange={(e) => setNewUrl(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className="formGroup">
                         <label htmlFor="intervalInput">Check interval (seconds):</label>
                         <input 
                             type="number" 
@@ -123,23 +131,35 @@ function Dashboard(){
                             onChange={(e) => setNewInterval(Number(e.target.value))}
                         />
                     </div>
-                    <button onClick={handleAddWebsite}>Add Website</button>
+                    <button className="btnAdd" onClick={handleAddWebsite}>Add Website</button>
+                    <button className="btnLogOut" onClick={()=>(setIsAdmin(false))}>Close and log</button>
                 </div>
             }
             {
                 (!isAdmin)&&
-                <div>
+                <div className="loginContainer">
                     <label htmlFor="passwordInput">Enter admin password to log in</label>
                     <input type="password" id="passwordInput" value={password} onChange={(e)=>setPassword(e.target.value)}/>
                     <button type="submit" onClick={handlePasswordSubmit}>Submit</button>
                 </div>
             }
-            {websites.map(website=>(
-                <div key={website.id}>
-                    {website.name} : {website.status||"No data"}
-                    {isAdmin && <button onClick={() => handleDelete(website.id)}>Delete</button>}
+            {
+                errorMessage&&
+                <div className="errorMessageContainer">
+                    {errorMessage}
                 </div>
-            ))}
+            }
+            <div className="websitesContainer">
+                {isAdmin && websites.length > 0 && <h2 className="websitesTitle">Monitored Websites</h2>}
+                {websites.map(website=>(
+                    <StatusCard 
+                        key={website.id} 
+                        website={website} 
+                        isAdmin={isAdmin}
+                        onDelete={handleDelete}
+                    />
+                ))}
+            </div>
             {
                 fetchError && <div>fetchError</div>
             }

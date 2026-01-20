@@ -1,42 +1,161 @@
-/* #root {
-  max-width: 1280px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:'Times New Roman', Times, serif;
+  background: linear-gradient(30deg,rgb(0, 208, 245)0%, #ee05cf 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.dashboardContainer {
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.dashboardTitle {
+  color: #1f2937;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.loginContainer {
+  max-width: 400px;
+  margin: 40px auto;
+  text-align: center;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.loginContainer label {
+  display: block;
+  margin-bottom: 10px;
+  color: #4b5563;
+  font-weight: 500;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.loginContainer input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 15px;
 }
 
-.card {
-  padding: 2em;
+.loginContainer input:focus {
+  outline: none;
+  border-color: #667eea;
 }
 
-.read-the-docs {
-  color: #888;
-} */
+.loginContainer button {
+  width: 100%;
+  padding: 12px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.loginContainer button:hover {
+  background: #5568d3;
+}
+
+.adminPanel {
+  background: #f9fafb;
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 40px;
+}
+
+.adminPanel h2 {
+  color: #1f2937;
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.btnAdd {
+  width: 100%;
+  padding: 12px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btnLogOut {
+  width: 100%;
+  padding: 12px;
+  background: #c93d06;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+.errorMessageContainer{
+  /* width: 100%; */
+  max-width: 400px;
+  padding: 12px;
+  background: #c93d06ad;
+  color: white;
+  border: 1px solid rgb(192, 49, 49);
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btnLogOut:hover{
+  background: #972e04;
+}
+
+.btnAdd:hover {
+  background: #059669;
+}
+
+
+.websitesContainer {
+  margin-top: 30px;
+}
+
+.websitesTitle {
+  color: #000000;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
