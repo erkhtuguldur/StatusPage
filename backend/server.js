@@ -83,6 +83,20 @@ app.get("/api/websites/:id/uptime",async (req,res)=>{
     } catch (error) {
         res.status(500).json({error:"Server error"});
     }
+});
+
+app.post("/api/auth/validate",async (req,res)=>{
+    try {
+        const {password}=req.body;
+        if(password===process.env.ADMIN_PASSWORD){
+            res.json({valid:true});
+        }
+        else{
+            res.json({valid:false});
+        }
+    } catch (error) {
+        res.status(500).json({error:"Server error"});
+    }
 })
 
 async function checkWebsite(website) {
