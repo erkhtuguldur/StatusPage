@@ -4,11 +4,17 @@ import {Pool} from "pg";
 import cors from "cors";
 import axios from "axios";
 import cron from "node-cron";
+import {createServer} from "http";
+import {Server} from "socket.io";
+import { timeStamp } from "console";
 
 dotenv.config();
 
 const app=express();
 const PORT = 5000;
+const httpServer=createServer(app);
+const io = new Server(httpServer, { cors: { origin: '*' } });
+httpServer.listen(5000);
 
 const pool=new Pool({
     host:process.env.DB_HOST,
@@ -93,11 +99,27 @@ async function checkWebsite(website) {
         console.log(`success ${website.name}: ${websiteStatus} (${responseTime}ms)`);
         await pool.query(queryText,[website.id,websiteStatus,responseTime,result.status,null]);
 
+        io.emit("statusUpdate",{
+            website:website.id,
+            status:websiteStatus,
+            responseTime:responseTime,
+            statusCode:result.status,
+            timeStamp:new Date()
+        });
+
     } catch (error) {
         const responseTime=Date.now()-startTime;
         const queryText="insert into checks (website_id,status,response_time,status_code,error_message) values ($1,$2,$3,$4,$5)";
         console.log(`error ${website.name}: down (${error.message})`);
         await pool.query(queryText,[website.id,"down",responseTime,null,error.message]);
+        io.emit("statusUpdate",{
+            website:website.id,
+            status:"down",
+            responseTime:responseTime,
+            statusCode:null,
+            error:error.message,
+            timeStamp:new Date()
+        });
     }
     
 }
@@ -124,7 +146,7 @@ cron.schedule('* * * * *',()=>{
 
 
 
-app.listen(PORT, ()=>{
+httpServer.listen(PORT, ()=>{
     checkAllWebsites();
     console.log(`Server running on http://localhost:${PORT}`);
 })
