@@ -30,9 +30,18 @@ app.use(express.json());
 
 app.get("/api/websites",async (req,res)=>{
     try {
-        const result= await pool.query(`select * from websites 
+        const result= await pool.query(`select websites.*, 
+                                            c.status, c.response_time, 
+                                            c.status_code, 
+                                            c.error_message, 
+                                            c.checked_at 
+                                        from websites 
                                         left join lateral (
-                                            select * 
+                                            select status, 
+                                                response_time, 
+                                                status_code, 
+                                                error_message, 
+                                                checked_at
                                             from checks 
                                             where website_id=websites.id
                                             order by checked_at desc
@@ -76,8 +85,8 @@ app.get("/api/websites/:id/uptime",async (req,res)=>{
                          from checks 
                          where website_id=$1 and checked_at>now()-interval '24 hours'`;
         const result=await pool.query(queryText,[id]);
-        const totalChecks=result.rows[0].total_checks;
-        const upChecks=result.rows[0].up_checks;
+        const totalChecks=parseInt(result.rows[0].total_checks);
+        const upChecks=parseInt(result.rows[0].up_checks);
         let upPercent= totalChecks===0 ? 0: (upChecks/totalChecks)*100;
         res.json({uptime:upPercent,totalChecks,upChecks});
     } catch (error) {
