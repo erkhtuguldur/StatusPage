@@ -11,7 +11,7 @@ function Dashboard(){
     const [newUrl, setNewUrl] = useState('');
     const [newInterval, setNewInterval] = useState(60);
     const [errorMessage, setErrorMessage]=useState("");
-
+    const [expandedCard,setExpandedCard]=useState(null);
     useEffect(()=>{
         const socket=io("http://localhost:5000");
         socket.on("statusUpdate",(data)=>{

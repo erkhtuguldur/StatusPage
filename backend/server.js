@@ -85,6 +85,20 @@ app.get("/api/websites/:id/uptime",async (req,res)=>{
     }
 });
 
+app.get("/api/websites/:id/history",async (req,res)=>{
+    try {
+        const {id}=req.params;
+        const queryText=`select status, response_time, checked_at 
+                        from checks 
+                        where website_id = $1 AND checked_at > NOW() - INTERVAL '24 hours' 
+                        order by checked_at asc`;
+        const result=await pool.query(queryText,[id]);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({error:"Server error"});
+    }
+});
+
 app.post("/api/auth/validate",async (req,res)=>{
     try {
         const {password}=req.body;
@@ -154,8 +168,21 @@ async function checkAllWebsites() {
     
 }
 
+async function cleanupDatabase() {
+    try {
+        const result=await pool.query("delete from checks where checked_at <NOW() -interval '24 hours'");
+        console.log(`${result.rowCount} entries deleted from checks`);
+    } catch (error) {
+        console.log("error when deleting old data",error);
+    }
+}
+
 cron.schedule('* * * * *',()=>{
     checkAllWebsites();
+});
+
+cron.schedule("0 */3 * * * ",()=>{
+    cleanupDatabase();
 })
 
 

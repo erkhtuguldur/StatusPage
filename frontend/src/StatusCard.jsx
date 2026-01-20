@@ -1,9 +1,14 @@
+import { useState } from "react";
 import "./StatusCard.css"
-function StatusCard({ website, isAdmin, onDelete }) {
+import { useEffect } from "react";
+function StatusCard({ website, isAdmin, onDelete,isExpanded,onToggleExpand }) {
     const isUp = website.status ==="up";
     const statusText = website.status || "No data";
     const responseTime = website.response_time ? `${website.response_time}ms` : "N/A";
-    
+    const [uptime,setUptime]=useState(null);
+    const [History,setHistory]=useState([]);
+
+
     return (
         <div className={`card ${isUp ? "green" : "red"}`}>
             <div className="info">
