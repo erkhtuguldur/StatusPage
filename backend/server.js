@@ -162,7 +162,17 @@ async function checkWebsite(website) {
 
 async function checkAllWebsites() {
     try {
-        const websites=await pool.query("select * from websites");
+        const websites=await pool.query(`select websites.* from websites
+                                            left join lateral (
+                                            select
+                                            checked_at
+                                            from checks 
+                                            where website_id=websites.id
+                                            order by checked_at desc
+                                            limit 1) as c on true
+                                            where c.checked_at is null or 
+                                            extract(epoch from(now()-c.checked_at))>=check_interval `);
+                                            
         console.log("Starting checks");
         const websitePromises=[];
         for(let website of websites.rows){

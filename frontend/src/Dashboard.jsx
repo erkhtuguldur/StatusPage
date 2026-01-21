@@ -157,6 +157,8 @@ function Dashboard(){
                         website={website} 
                         isAdmin={isAdmin}
                         onDelete={handleDelete}
+                        isExpanded={expandedCard === website.id}
+                        onToggleExpand={(id) => setExpandedCard(expandedCard === id ? null : id)}
                     />
                 ))}
             </div>
