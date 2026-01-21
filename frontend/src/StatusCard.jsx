@@ -13,11 +13,11 @@ function StatusCard({ website, isAdmin, onDelete,isExpanded,onToggleExpand }) {
         
         async function fetchData(){
             try {
-                const uptimeRes = await fetch(`http://localhost:5000/api/websites/${website.id}/uptime`);
+                const uptimeRes = await fetch(`${import.meta.env.VITE_API_URL}/api/websites/${website.id}/uptime`);
                 const uptimeData = await uptimeRes.json();
                 setUptime(uptimeData);
                 console.log('Fetching for website ID:', website.id);
-                const historyRes = await fetch(`http://localhost:5000/api/websites/${website.id}/history`);
+                const historyRes = await fetch(`${import.meta.env.VITE_API_URL}/api/websites/${website.id}/history`);
                 const historyData = await historyRes.json();
                 setHistory(historyData);
             } catch (error) {

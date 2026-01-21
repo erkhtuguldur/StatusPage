@@ -13,7 +13,7 @@ function Dashboard(){
     const [errorMessage, setErrorMessage]=useState("");
     const [expandedCard,setExpandedCard]=useState(null);
     useEffect(()=>{
-        const socket=io("http://localhost:5000");
+        const socket=io(import.meta.env.VITE_API_URL);
         socket.on("statusUpdate",(data)=>{
         
         setWebsites(websites => 
@@ -33,7 +33,7 @@ function Dashboard(){
 
     async function handlePasswordSubmit() {
         try {
-            const response=await fetch("http://localhost:5000/api/auth/validate",{
+            const response=await fetch(`${import.meta.env.VITE_API_URL}/api/auth/validate`,{
                 method:"POST",
                 headers:{"Content-Type": "application/json"},
                 body: JSON.stringify({
@@ -53,7 +53,7 @@ function Dashboard(){
 
     async function handleAddWebsite() {
         try {
-            const response = await fetch("http://localhost:5000/api/websites", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/websites`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -75,7 +75,7 @@ function Dashboard(){
 
     async function handleDelete(id) {
         try {
-            await fetch(`http://localhost:5000/api/websites/${id}`, {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/websites/${id}`, {
                 method: "DELETE"
             });
             setWebsites(websites.filter(site => site.id !== id));
@@ -88,7 +88,7 @@ function Dashboard(){
     let fetchError;
     async function fetchWebsites() {
         try {
-            const response=await fetch("http://localhost:5000/api/websites");
+            const response=await fetch(`${import.meta.env.VITE_API_URL}/api/websites`);
             const data=await response.json();
             setWebsites(data);
         } catch (error) {
