@@ -47,7 +47,7 @@ function Dashboard(){
                 setErrorMessage("Invalid password");
             }
         } catch (error) {
-            setErrorMessage(error);
+            setErrorMessage(error.message || "Connection error");
         }
     }
 

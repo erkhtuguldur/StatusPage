@@ -53,7 +53,7 @@ function StatusCard({ website, isAdmin, onDelete,isExpanded,onToggleExpand }) {
             {isExpanded && (
                 <div className="expandedSection">
                     {uptime && (
-                        <div style={{ marginBottom: '20px' }}>
+                        <div className="uptimeContainer">
                             <h4>Uptime (Last 24h): {uptime.uptime}%</h4>
                             <p>Total Checks: {uptime.totalChecks} | Up: {uptime.upChecks}</p>
                         </div>
@@ -65,8 +65,8 @@ function StatusCard({ website, isAdmin, onDelete,isExpanded,onToggleExpand }) {
                             <ResponsiveContainer width="100%" height={200}>
                                 <LineChart data={chartData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="time" />
-                                    <YAxis />
+                                    <XAxis dataKey="time" label={{ value: "Time", position: "insideBottom", offset: -5 }} />
+                                    <YAxis label={{ value: "(ms)", angle: -90, position: "insideLeft" }} />
                                     <Tooltip />
                                     <Line type="monotone" dataKey="responseTime" stroke="#8884d8" strokeWidth={2} dot={false} />
                                 </LineChart>
