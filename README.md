@@ -2,7 +2,7 @@
 
 A real-time uptime monitoring tool with automated health checks and live WebSocket updates.
 
-**[Live Demo](#)** | **[GitHub](https://github.com/erkhtuguldur/StatusPage)**
+**[Live Demo](https://statuspage-frontend.onrender.com/)** | **[GitHub](https://github.com/erkhtuguldur/StatusPage)**
 
 ## Overview
 
